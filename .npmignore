@@ -1,0 +1,5 @@
+.github
+.vscode
+src/
+tsconfig.tsbuildinfo
+draft.md

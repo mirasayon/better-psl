@@ -1,0 +1,7 @@
+.DS_Store
+
+node_modules/
+.vscode
+/dist
+tsconfig.tsbuildinfo
+draft.md
