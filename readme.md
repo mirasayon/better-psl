@@ -1,8 +1,10 @@
 # better-psl (Public Suffix List)
 
-Repository: <https://github.com/mirasayon/better-psl/>
+Repository: [github.com/mirasayon/better-psl](https://github.com/mirasayon/better-psl/)
 
-`better-psl` is a `JavaScript` domain name parser based on the
+NPM package url: [www.npmjs.com/package/better-psl](https://www.npmjs.com/package/better-psl)
+
+`better-psl` is a modern `JavaScript` domain name parser based on the
 [Public Suffix List](https://publicsuffix.org/).
 
 ## What is the Public Suffix List?
@@ -18,19 +20,17 @@ A "public suffix" is one under which Internet users can directly register names.
 Some examples of public suffixes are ".com", ".co.uk" and "pvt.k12.wy.us". The
 Public Suffix List is a list of all known public suffixes.
 
-Source: http://publicsuffix.org
+Source: [publicsuffix.org](https://publicsuffix.org/)
 
-## Installation
+## Installation (with `npm`)
 
-This module is available both for Node.js and the browser. See below for more
-details.
+This module is currently only available for `Node.js`. See below for details.
 
 ### Node.js
 
-This module is tested on Node.js v8, v10, v12, v14, v16, v18, v20 and v22. See
-[`.github/workflows/node.js.yml`](.github/workflows/node.js.yml).
+This module is tested on Node.js v20 and v22
 
-```sh
+```bash
 npm install better-psl
 ```
 
@@ -38,8 +38,14 @@ npm install better-psl
 
 The package is ESM-only
 
-```js
+```ts
 import psl from "better-psl";
+```
+
+or
+
+```ts
+import { get, isValid, parse, rules } from "better-psl";
 ```
 
 ## API
@@ -58,38 +64,62 @@ properties:
 
 Parse domain without subdomain:
 
-```js
+```ts
 import psl from "better-psl";
 
-const parsed = psl.parse("google.com");
-console.log(parsed.tld); // 'com'
-console.log(parsed.sld); // 'google'
-console.log(parsed.domain); // 'google.com'
-console.log(parsed.subdomain); // null
+const { parsed } = psl.parse("google.com");
+if (parsed) {
+    console.log(parsed);
+    // parsed: {
+    //     input: "google.com",
+    //     tld: "com",
+    //     sld: "google",
+    //     domain: "google.com",
+    //     subdomain: null,
+    //     listed: true,
+    // };
+}
 ```
 
 Parse domain with subdomain:
 
-```js
+```ts
 import psl from "better-psl";
-
-const parsed = psl.parse("www.google.com");
-console.log(parsed.tld); // 'com'
-console.log(parsed.sld); // 'google'
-console.log(parsed.domain); // 'google.com'
-console.log(parsed.subdomain); // 'www'
+const { parsed, error } = psl.parse("www.google.com");
+if (error) {
+    // return
+}
+if (parsed) {
+    console.log(parsed);
+    // parsed: {
+    //     input: "www.google.com",
+    //     tld: "com",
+    //     sld: "google",
+    //     domain: "google.com",
+    //     subdomain: "www",
+    //     listed: true,
+    // };
+}
 ```
 
 Parse domain with nested subdomains:
 
-```js
+```ts
 import psl from "better-psl";
 
-const parsed = psl.parse("a.b.c.d.foo.com");
-console.log(parsed.tld); // 'com'
-console.log(parsed.sld); // 'foo'
-console.log(parsed.domain); // 'foo.com'
-console.log(parsed.subdomain); // 'a.b.c.d'
+const { parsed, error } = psl.parse("a.b.c.d.foo.com");
+if (error) {
+    // return;
+}
+console.log(parsed);
+// parsed: {
+//     input: "a.b.c.d.foo.com",
+//     tld: "com",
+//     sld: "foo",
+//     domain: "foo.com",
+//     subdomain: "a.b.c.d",
+//     listed: true,
+// };
 ```
 
 ### `psl.get(domain)`
@@ -98,11 +128,13 @@ Get domain name, `sld` + `tld`. Returns `null` if not valid.
 
 #### Examples
 
-```js
+```ts
 import psl from "better-psl";
 
 // null input.
 psl.get(null); // null
+psl.get(undefined); // null
+psl.get("some-thing-else"); // null
 
 // Mixed case.
 psl.get("COM"); // null
@@ -151,7 +183,7 @@ whether the domain has a valid Public Suffix.
 
 #### Example
 
-```js
+```ts
 import psl from "better-psl";
 
 psl.isValid("google.com"); // true
@@ -161,11 +193,11 @@ psl.isValid("x.yz"); // false
 
 ## Testing and Building
 
-```sh
+```bash
 # Update rules from publicsuffix.org
 npm run update-rules
 
-# Build ESM, CJS and UMD and create dist files
+# Build and create dist files
 npm run build
 ```
 

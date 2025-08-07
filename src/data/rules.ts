@@ -1,3 +1,4 @@
+/** rules from publicsuffix.org */
 export const rules: string[] = [
   "ac",
   "com.ac",

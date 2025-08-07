@@ -5,3 +5,5 @@ node_modules/
 /dist
 tsconfig.tsbuildinfo
 draft.md
+/src/examples
+/logs

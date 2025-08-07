@@ -1,13 +1,15 @@
-import punycode from "punycode/punycode.js";
+import { toASCII } from "punycode/punycode.js";
 import { rules } from "./data/rules.js";
 import { errorCodes } from "./constants/error-codes.js";
+import type { ParseReturnType, parseReturnType } from "./types/index.js";
+import { validate } from "./common/validator.js";
 
 /**
  * Parse rules from file.
  */
 const rulesByPunySuffix = rules.reduce((map, rule) => {
     const suffix = rule.replace(/^(\*\.|\!)/, "");
-    const punySuffix = punycode.toASCII(suffix);
+    const punySuffix = toASCII(suffix);
     const firstChar = rule.charAt(0);
 
     if (map.has(punySuffix)) {
@@ -27,7 +29,7 @@ const rulesByPunySuffix = rules.reduce((map, rule) => {
 
 /** Find rule for a given domain. */
 const findRule = (domain: string) => {
-    const punyDomain = punycode.toASCII(domain);
+    const punyDomain = toASCII(domain);
     const punyDomainChunks = punyDomain.split(".");
 
     for (let i = 0; i < punyDomainChunks.length; i++) {
@@ -40,78 +42,6 @@ const findRule = (domain: string) => {
     return null;
 };
 
-/**
- *
- *  Validate domain name and throw if not valid.
- *
- *  From wikipedia:
- *
- *  Hostnames are composed of series of labels concatenated with dots, as are all
- *  domain names. Each label must be between 1 and 63 characters long, and the
- *  entire hostname (including the delimiting dots) has a maximum of 255 chars.
- *
- *  Allowed chars:
- *
- *  * `a-z`
- *  * `0-9`
- *  * `-` but not as a starting or ending character
- *  * `.` as a separator for the textual portions of a domain name
- *
- *  * http://en.wikipedia.org/wiki/Domain_name
- *  * http://en.wikipedia.org/wiki/Hostname */
-
-const validate = (input: string) => {
-    /** Before we can validate we need to take care of IDNs with unicode chars. */
-    const ascii = punycode.toASCII(input);
-
-    if (ascii.length < 1) {
-        return "DOMAIN_TOO_SHORT";
-    }
-    if (ascii.length > 255) {
-        return "DOMAIN_TOO_LONG";
-    }
-
-    // Check each part's length and allowed chars.
-    const labels = ascii.split(".");
-    let label;
-
-    for (let i = 0; i < labels.length; ++i) {
-        label = labels[i];
-        if (!label.length) {
-            return "LABEL_TOO_SHORT";
-        }
-        if (label.length > 63) {
-            return "LABEL_TOO_LONG";
-        }
-        if (label.charAt(0) === "-") {
-            return "LABEL_STARTS_WITH_DASH";
-        }
-        if (label.charAt(label.length - 1) === "-") {
-            return "LABEL_ENDS_WITH_DASH";
-        }
-        if (!/^[a-z0-9\-_]+$/.test(label)) {
-            return "LABEL_INVALID_CHARS";
-        }
-    }
-};
-type ParseReturnType = {
-    input: string;
-    tld: null | string;
-    sld: null | string;
-    domain: null | string;
-    subdomain: null | string;
-    listed: boolean;
-};
-type ICode = Exclude<Required<ReturnType<typeof validate>>, undefined>;
-type ParseReturnTypeOnError = {
-    input?: string;
-    message: (typeof errorCodes)[ICode];
-    code: ICode;
-};
-type parseReturnType = {
-    error?: ParseReturnTypeOnError;
-    parsed?: ParseReturnType;
-};
 /** Parse domain. */
 export const parse = (input: string): parseReturnType => {
     if (typeof input !== "string") {
@@ -131,6 +61,8 @@ export const parse = (input: string): parseReturnType => {
     const error = validate(domain);
     if (error) {
         return {
+            status: "error",
+            parsed: null,
             error: {
                 input: input,
                 message: errorCodes[error],
@@ -152,7 +84,7 @@ export const parse = (input: string): parseReturnType => {
 
     // Non-Internet TLD
     if (domainParts[domainParts.length - 1] === "local") {
-        return { parsed };
+        return { parsed, error: null, status: "success" };
     }
 
     const handlePunycode = () => {
@@ -160,10 +92,10 @@ export const parse = (input: string): parseReturnType => {
             return parsed;
         }
         if (parsed.domain) {
-            parsed.domain = punycode.toASCII(parsed.domain);
+            parsed.domain = toASCII(parsed.domain);
         }
         if (parsed.subdomain) {
-            parsed.subdomain = punycode.toASCII(parsed.subdomain);
+            parsed.subdomain = toASCII(parsed.subdomain);
         }
         return parsed;
     };
@@ -173,7 +105,7 @@ export const parse = (input: string): parseReturnType => {
     // Unlisted tld.
     if (!rule) {
         if (domainParts.length < 2) {
-            return { parsed };
+            return { parsed, error: null, status: "success" };
         }
         parsed.tld = domainParts.pop() ?? null;
         parsed.sld = domainParts.pop() ?? null;
@@ -182,7 +114,7 @@ export const parse = (input: string): parseReturnType => {
             parsed.subdomain = domainParts.pop() ?? null;
         }
 
-        return { parsed: handlePunycode() };
+        return { parsed: handlePunycode(), error: null, status: "success" };
     }
 
     // At this point we know the public suffix is listed.
@@ -201,7 +133,7 @@ export const parse = (input: string): parseReturnType => {
     parsed.tld = tldParts.join(".");
 
     if (!privateParts.length) {
-        return { parsed: handlePunycode() };
+        return { parsed: handlePunycode(), error: null, status: "success" };
     }
 
     if (rule.wildcard) {
@@ -210,7 +142,7 @@ export const parse = (input: string): parseReturnType => {
     }
 
     if (!privateParts.length) {
-        return { parsed: handlePunycode() };
+        return { parsed: handlePunycode(), error: null, status: "success" };
     }
 
     parsed.sld = privateParts.pop() ?? null;
@@ -220,15 +152,19 @@ export const parse = (input: string): parseReturnType => {
         parsed.subdomain = privateParts.join(".");
     }
 
-    return { parsed: handlePunycode() };
+    return { parsed: handlePunycode(), error: null, status: "success" };
 };
 
 /** Get domain */
-export const get = (domain: string) => {
+export const get = (domain?: string | null): string | null => {
     if (!domain) {
         return null;
     }
-    return parse(domain).parsed?.domain || null;
+    const { parsed, error } = parse(domain);
+    if (error) {
+        return null;
+    }
+    return parsed.domain;
 };
 
 /** Check whether domain belongs to a known public suffix. */
@@ -237,4 +173,6 @@ export const isValid = (domain: string) => {
     return Boolean(parsed.parsed?.domain && parsed.parsed?.listed);
 };
 export { rules };
-export default { parse, get, isValid, rules };
+/**  */
+const psl = { parse, get, isValid, rules };
+export default psl;

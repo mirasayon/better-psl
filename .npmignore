@@ -3,3 +3,6 @@
 src/
 tsconfig.tsbuildinfo
 draft.md
+logs/
+/tsconfig.json
+.prettierrc

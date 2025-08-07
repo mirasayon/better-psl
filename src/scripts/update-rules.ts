@@ -33,7 +33,11 @@ async function main() {
 
     await writeFile(
         dest,
-        `export const rules: string[] = ${JSON.stringify(rules, null, 2)};`,
+        `/** rules from publicsuffix.org */\nexport const rules: string[] = ${JSON.stringify(
+            rules,
+            null,
+            2,
+        )};`,
     );
 }
 

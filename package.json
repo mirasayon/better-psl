@@ -1,11 +1,8 @@
 {
     "name": "better-psl",
-    "version": "0.0.1",
-    "description": "Domain name parser based on the Public Suffix List",
-    "repository": {
-        "type": "git",
-        "url": "git@github.com:mirasayon/better-psl.git"
-    },
+    "version": "0.1.0",
+    "description": "Better & modern domain name parser based on the Public Suffix List",
+    "repository": "mirasayon/better-psl",
     "type": "module",
     "main": "./dist/index.js",
     "module": "./dist/index.js",
@@ -20,7 +17,11 @@
         "publicsuffixlist",
         "better-psl"
     ],
-    "author": "Mirasayon <mirasayon@ya.ru> mirasayon.com",
+    "author": {
+        "email": "mirasayon@ya.ru",
+        "name": "Mirasayon",
+        "url": "https://mirasayon.com/"
+    },
     "funding": "https://github.com/sponsors/mirasayon",
     "license": "MIT",
     "dependencies": {
@@ -31,7 +32,9 @@
         "@types/punycode": "^2.1.4",
         "rimraf": "^6.0.1",
         "tsx": "^4.20.3",
-        "typescript": "^5.9.2",
-        "typescript-eslint": "^8.39.0"
+        "typescript": "^5.9.2"
+    },
+    "engines": {
+        "node": ">=20"
     }
 }
