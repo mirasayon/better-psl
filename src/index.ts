@@ -1,4 +1,5 @@
-import { toASCII } from "punycode/punycode.js";
+import punycode from "punycode/punycode.js";
+const { toASCII } = punycode;
 import { rules } from "./data/rules.js";
 import { errorCodes } from "./constants/error-codes.js";
 import type { ParseReturnType, parseReturnType } from "./types/index.js";

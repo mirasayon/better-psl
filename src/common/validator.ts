@@ -1,4 +1,5 @@
-import { toASCII } from "punycode/punycode.js";
+import punycode from "punycode/punycode.js";
+const { toASCII } = punycode;
 /**
  *
  *  Validate domain name and throw if not valid.
