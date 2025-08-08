@@ -1,6 +1,6 @@
 {
     "name": "better-psl",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "Better & modern domain name parser based on the Public Suffix List",
     "repository": "mirasayon/better-psl",
     "type": "module",
