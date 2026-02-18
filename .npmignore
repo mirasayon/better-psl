@@ -1,5 +1,7 @@
-.github
-src/
-/tsconfig.json
-.prettierrc
+/.github
+/src
+tsconfig.json
+/.prettierignore
+/.prettierrc
 /scripts
+/examples
