@@ -4,7 +4,7 @@ Repository: [github.com/mirasayon/better-psl](https://github.com/mirasayon/bette
 
 NPM package url: [www.npmjs.com/package/better-psl](https://www.npmjs.com/package/better-psl)
 
-`better-psl` is a modern `JavaScript` domain name parser based on the
+`better-psl` is a modern JavaScript domain name parser based on the
 [Public Suffix List](https://publicsuffix.org/).
 
 ## What is the Public Suffix List?
@@ -55,10 +55,10 @@ import { get, isValid, parse, rules } from "better-psl";
 Parse domain based on Public Suffix List. Returns an `Object` with the following
 properties:
 
--   `tld`: Top level domain (this is the _public suffix_).
--   `sld`: Second level domain (the first private part of the domain name).
--   `domain`: The domain name is the `sld` + `tld`.
--   `subdomain`: Optional parts left of the domain.
+- `tld`: Top level domain (this is the _public suffix_).
+- `sld`: Second level domain (the first private part of the domain name).
+- `domain`: The domain name is the `sld` + `tld`.
+- `subdomain`: Optional parts left of the domain.
 
 #### Examples
 
@@ -205,29 +205,10 @@ Feel free to fork if you see possible improvements!
 
 ## Acknowledgements
 
--   Mozilla Foundation's [Public Suffix List](https://publicsuffix.org/)
--   Inspired by [weppos/publicsuffix-ruby](https://github.com/weppos/publicsuffix-ruby)
+- Fork of [psl](https://github.com/lupomontero/psl)
+- Mozilla Foundation's [Public Suffix List](https://publicsuffix.org/)
+- Inspired by [weppos/publicsuffix-ruby](https://github.com/weppos/publicsuffix-ruby)
 
 ## License
 
-The MIT License (MIT)
-
-Copyright (c) 2025 "Mirasayon" <mirasayon@ya.ru>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+[MIT](./license.md)
