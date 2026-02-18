@@ -1,7 +1,7 @@
-import { validate } from "../common/validator.js";
-import { errorCodes } from "../constants/error-codes.js";
+import { validate } from "./validate.js";
+import { ERROR_CODES } from "./error-codes.js";
 
-export type ParseReturnType = {
+export type ParseReturnTypeOnSuccess = {
     input: string;
     tld: null | string;
     sld: null | string;
@@ -9,13 +9,13 @@ export type ParseReturnType = {
     subdomain: null | string;
     listed: boolean;
 };
-export type ICode = Exclude<Required<ReturnType<typeof validate>>, undefined>;
+export type ErrorCodeNames = Exclude<Required<ReturnType<typeof validate>>, null>;
 export type ParseReturnTypeOnError = {
     input?: string;
-    message: (typeof errorCodes)[ICode];
-    code: ICode;
+    message: (typeof ERROR_CODES)[ErrorCodeNames];
+    code: ErrorCodeNames;
 };
-export type parseReturnType =
+export type ParseReturnTypes =
     | {
           error: ParseReturnTypeOnError;
           parsed: null;
@@ -23,6 +23,6 @@ export type parseReturnType =
       }
     | {
           error: null;
-          parsed: ParseReturnType;
+          parsed: ParseReturnTypeOnSuccess;
           status: "success";
       };

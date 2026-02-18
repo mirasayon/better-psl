@@ -1,9 +1,9 @@
 import punycode from "punycode/punycode.js";
 const { toASCII } = punycode;
-import { rules } from "./data/rules.js";
-import { errorCodes } from "./constants/error-codes.js";
-import type { ParseReturnType, parseReturnType } from "./types/index.js";
-import { validate } from "./common/validator.js";
+import { rules } from "./rules.js";
+import { ERROR_CODES } from "./error-codes.js";
+import type { ParseReturnTypeOnSuccess, ParseReturnTypes } from "./types.js";
+import { validate } from "./validate.js";
 
 /**
  * Parse rules from file.
@@ -24,7 +24,6 @@ const rulesByPunySuffix = rules.reduce((map, rule) => {
         wildcard: firstChar === "*",
         exception: firstChar === "!",
     });
-
     return map;
 }, new Map());
 
@@ -44,7 +43,7 @@ const findRule = (domain: string) => {
 };
 
 /** Parse domain. */
-export const parse = (input: string): parseReturnType => {
+export const parse = (input: string): ParseReturnTypes => {
     if (typeof input !== "string") {
         throw new TypeError("Domain name must be a string.");
     }
@@ -58,7 +57,7 @@ export const parse = (input: string): parseReturnType => {
         domain = domain.slice(0, domain.length - 1);
     }
 
-    // Validate and sanitise input.
+    // Validate and sanitize input.
     const error = validate(domain);
     if (error) {
         return {
@@ -66,13 +65,13 @@ export const parse = (input: string): parseReturnType => {
             parsed: null,
             error: {
                 input: input,
-                message: errorCodes[error],
+                message: ERROR_CODES[error],
                 code: error,
             },
         };
     }
 
-    const parsed: ParseReturnType = {
+    const parsed: ParseReturnTypeOnSuccess = {
         input: input,
         tld: null,
         sld: null,
@@ -122,10 +121,7 @@ export const parse = (input: string): parseReturnType => {
     parsed.listed = true;
 
     const tldParts = rule.suffix.split(".");
-    const privateParts = domainParts.slice(
-        0,
-        domainParts.length - tldParts.length,
-    );
+    const privateParts = domainParts.slice(0, domainParts.length - tldParts.length);
 
     if (rule.exception) {
         privateParts.push(tldParts.shift());
@@ -174,6 +170,8 @@ export const isValid = (domain: string) => {
     return Boolean(parsed.parsed?.domain && parsed.parsed?.listed);
 };
 export { rules };
-/**  */
+/**
+ * Public suffix list.
+ */
 const psl = { parse, get, isValid, rules };
 export default psl;

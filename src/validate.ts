@@ -1,7 +1,6 @@
 import punycode from "punycode/punycode.js";
 const { toASCII } = punycode;
 /**
- *
  *  Validate domain name and throw if not valid.
  *
  *  From wikipedia:
@@ -53,4 +52,5 @@ export const validate = (input: string) => {
             return "LABEL_INVALID_CHARS";
         }
     }
+    return null;
 };

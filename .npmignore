@@ -1,8 +1,5 @@
 .github
-.vscode
 src/
-tsconfig.tsbuildinfo
-draft.md
-logs/
 /tsconfig.json
 .prettierrc
+/scripts

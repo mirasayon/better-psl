@@ -1,25 +1,26 @@
 {
     "name": "better-psl",
     "version": "1.0.1",
-    "description": "Better & modern domain name parser based on the Public Suffix List",
-    "repository": "mirasayon/better-psl",
+    "description": "Modern JavaScript domain name parser based on the Public Suffix List",
     "type": "module",
     "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "update-rules": "tsx src/scripts/update-rules.ts",
-        "build": "rimraf dist && tsc --build",
+        "update-rules": "node ./scripts/update-rules.ts",
+        "build": "node ./scripts/rm-dist.ts && tsc",
+        "ts:watch": "node ./scripts/rm-dist.ts && tsc --watch",
         "changelog": "git log $(git describe --tags --abbrev=0)..HEAD --oneline --format=\"%h %s (%an <%ae>)\""
     },
     "keywords": [
         "publicsuffix",
         "publicsuffixlist",
+        "psl",
         "better-psl"
     ],
     "author": {
         "email": "mirasayon@ya.ru",
-        "name": "Mirasayon",
+        "name": "Miralisher Agzamov",
         "url": "https://mirasayon.com/"
     },
     "funding": "https://github.com/sponsors/mirasayon",
@@ -28,11 +29,13 @@
         "punycode": "^2.3.1"
     },
     "devDependencies": {
-        "@types/node": "^24.2.0",
+        "@types/node": "^25.2.3",
         "@types/punycode": "^2.1.4",
-        "rimraf": "^6.0.1",
-        "tsx": "^4.20.3",
-        "typescript": "^5.9.2"
+        "typescript": "^5.9.3"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mirasayon/better-psl.git"
     },
     "engines": {
         "node": ">=20"
