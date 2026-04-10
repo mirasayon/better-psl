@@ -14,7 +14,7 @@ const rulesByPunySuffix = rules.reduce((map, rule) => {
     const firstChar = rule.charAt(0);
 
     if (map.has(punySuffix)) {
-        throw new Error(`Multiple rules found for ${rule} (${punySuffix})`);
+        throw new Error(`Multiple rules found for huy ${rule} (${punySuffix})`);
     }
 
     map.set(punySuffix, {
