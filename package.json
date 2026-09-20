@@ -8,8 +8,10 @@
     "types": "./dist/index.d.ts",
     "scripts": {
         "update-rules": "node ./scripts/update-rules.ts",
-        "build": "node ./scripts/rm-dist.ts && tsc",
-        "ts:watch": "node ./scripts/rm-dist.ts && tsc --watch",
+        "build": "tsc",
+        "prebuild": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+        "typecheck:watch": "tsc --watch --noEmit",
+        "typecheck": "tsc --noEmit",
         "changelog": "git log $(git describe --tags --abbrev=0)..HEAD --oneline --format=\"%h %s (%an <%ae>)\""
     },
     "keywords": [
@@ -29,7 +31,7 @@
         "punycode": "^2.3.1"
     },
     "devDependencies": {
-        "@types/node": "^26.1.1",
+        "@types/node": "^26.6.2",
         "@types/punycode": "^2.1.4",
         "typescript": "^7.0.2"
     },

@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { dirnamePath } from "./dirname.ts";
 
 /** Download URL and path to rules.js file. */
-const src = "https://publicsuffix.org/list/effective_tld_names.dat";
+const SOURCE = "https://publicsuffix.org/list/effective_tld_names.dat";
 const dest = join(dirnamePath, "..", "src", "rules.ts");
 
 /** Parse line (trim and ignore empty lines and comments). */
@@ -19,7 +19,7 @@ const parseLine = (line: string): string | null => {
 };
 /** Download rules and create rules.ts file. */
 const main = async () => {
-    const res = await fetch(src, { method: "GET" });
+    const res = await fetch(SOURCE, { method: "GET" });
     const text = await res.text();
     const rules = text.split("\n").reduce((memo: string[], line) => {
         const parsed = parseLine(line);
@@ -33,4 +33,4 @@ const main = async () => {
 };
 
 await main();
-console.log("Update completed");
+console.info("Update completed");
